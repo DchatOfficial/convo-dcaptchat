@@ -16,10 +16,12 @@
             img { 
                 transform: scale(6) translate( calc( -3px * 42 ), calc( -2px * 45 ) );
                 transform-origin: 0px 0px; image-rendering: pixelated; 
-                transition: all 0.3s ease-out;
             }
 
             [captchat] label:has(input:checked) + label { display: flex !important; }
+
+            [captchat]:hover [content]>img,
+            [captchat]:hover [content]     { transition: all 0.3s ease-out; }
 
             input[type="text"]:focus { border-color: var(--primary); }
 
