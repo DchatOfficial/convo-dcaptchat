@@ -9,7 +9,7 @@ string_t chars = "abcdefghijklmnopqrstuvwxyzab";
 void generator() {
 
     chars = chars.to_upper_case(); rl::Init( 300, 180, 60, "Dchat" );
-    auto font = rl::LoadFont("./www/assets/font/font.png");
+    auto font = rl::LoadFont("./View/assets/font/font.png");
 
     ptr_t<rl::Color> colors ({
         rl::GetColor( 0x6636fcff ),
