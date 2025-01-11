@@ -65,7 +65,7 @@ void generator() {
             auto img = rl::LoadImageFromScreen(); 
             auto raw = rl::ExportImageToMemory( img, ".png", &size );
 
-            auto out = fs::writable( regex::format( "./www/captchat/${0}.html", chars ) );
+            auto out = fs::writable( regex::format( "./View/captchat/${0}.html", chars ) );
             auto str = string_t( (char*) raw, size );
             console::log( "->", chars, chars.size() );
 
