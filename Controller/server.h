@@ -48,9 +48,9 @@ express_tcp_t image_generator() {
         cli.render( regex::format( R"(
             <div class="uk-flex uk-flex-center uk-flex-middle">
             <div style="border-radius:100%; width:300px; height:300px; background: #222;"
-                 class="uk-overflow-hidden" content><° ./View/captchat/${0}.html °>
+                 class="uk-overflow-hidden" content> <div img="${0}" ></div>
             </div></div>
-        )", cli.params["key"] ));
+        )", cli.params["index"] ));
     });
 
     return app;
@@ -69,12 +69,12 @@ express_tcp_t button_generator() {
 
              data += regex::format( _STRING_(
                 <input type="text" name="${0}" maxlength="1" style="height:100px;" required
-                    class="uk-input uk-text-center uk-text-uppercase" placeholder="*" >
+                       class="uk-input uk-text-center uk-text-uppercase" placeholder="*" >
                 <style>
-                    [captchat]:has([name="${0}"]:focus) [content]>img { transform: scale(6) translate( -${1}px, -${2}px ); }
-                    [captchat]:has([name="${0}"]:focus) [content]     { transform: rotate(${3}deg); }
+                    [captchat]:has([name="${0}"]:focus) [content]>[img] { transform: scale(6) translate( -${1}px, -${2}px ); }
+                    [captchat]:has([name="${0}"]:focus) [content]       { transform: rotate( ${3}deg ); }
                 </style>
-            ), z, a*42, b*45, (rand()%75)-37 ); z++;
+            ), z, a*41, b*46, (rand()%75)-37 ); z++;
 
         }
         
@@ -110,17 +110,20 @@ express_tcp_t token_generator() {
 express_tcp_t captchat() {
     auto app = express::http::add();
 
-    app.USE("/img/:key/:pass", image_generator()  );
-    app.USE("/tkn/:key/:pass", token_generator()  );
-    app.USE("/btn/:key/:pass", button_generator() );
+    app.USE("/img/:key/:pass/:index", image_generator()  );
+    app.USE("/tkn/:key/:pass/:index", token_generator()  );
+    app.USE("/btn/:key/:pass/:index", button_generator() );
 
     app.GET([=]( express_http_t cli ){ srand( process::now() );
             
         auto pass= string_t(6,'\0'); int i=6;
-        auto list= fs::read_folder("./View/captchat");
-        auto key = list[rand()%list.size()].slice(0,-5);
+        auto dir = "./View/assets/css/captchat_name.txt";
+        auto list= regex::split( fs::read_file(dir), '\n' );
+        
+        auto idx = rand()%list.size(); auto key=list[idx];
+        while( i-->0 ){ pass[i]=key[rand()%key.size()]; }
 
-        while( i-->0 ){ pass[i] = key[rand()%key.size()]; }
+        console::log( pass, idx, list[idx] );
 
         cli.render( regex::format( R"(
             <form class="uk-padding uk-background-dark uk-rounded 
@@ -134,16 +137,16 @@ express_tcp_t captchat() {
                     <icon> close </icon>
                 </label>
 
-                <° http://localhost:8000/captchat/img/${0}/${1} °>
-                <° http://localhost:8000/captchat/btn/${0}/${1} °>
-                <° http://localhost:8000/captchat/tkn/${0}/${1} °>
+                <° http://localhost:8000/captchat/img/${0}/${1}/${2} °>
+                <° http://localhost:8000/captchat/btn/${0}/${1}/${2} °>
+                <° http://localhost:8000/captchat/tkn/${0}/${1}/${2} °>
 
                 <button class="uk-button uk-button-primary uk-icon uk-width-1-1"
                         type="submit" > Send <icon>send</icon> 
                 </button>
 
             </form>
-        )", key, pass ));
+        )", key, pass, idx ));
 
     });
 

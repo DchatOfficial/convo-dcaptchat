@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8"> <title> captchat </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/assets/css/captchat_data.css">
         <link rel="stylesheet" href="/assets/css/uikit.css">
     </head>
 
@@ -13,15 +14,10 @@
 
         <style>
 
-            img { 
-                transform: scale(6) translate( calc( -3px * 42 ), calc( -2px * 45 ) );
-                transform-origin: 0px 0px; image-rendering: pixelated; 
-            }
-
             [captchat] label:has(input:checked) + label { display: flex !important; }
 
-            [captchat]:hover [content]>img,
-            [captchat]:hover [content]     { transition: all 0.3s ease-out; }
+            [captchat]:hover [content]>[img],
+            [captchat]:hover [content]       { transition: all 0.3s ease-out; }
 
             input[type="text"]:focus { border-color: var(--primary); }
 

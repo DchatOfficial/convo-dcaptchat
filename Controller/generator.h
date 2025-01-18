@@ -9,6 +9,8 @@ string_t chars = "abcdefghijklmnopqrstuvwxyzab";
 void generator() {
 
     chars = chars.to_upper_case(); rl::Init( 300, 180, 60, "Dchat" );
+    auto file = fs::writable("./View/assets/css/captchat_data.css");
+    auto name = fs::writable("./View/assets/css/captchat_name.txt");
     auto font = rl::LoadFont("./View/assets/font/font.png");
 
     ptr_t<rl::Color> colors ({
@@ -56,23 +58,31 @@ void generator() {
     });
 
     process::add([=](){
-        static int x=10;
+        static int x=0;
     coStart
 
-        while( x-->0 ){ do {
+        for( x=0; x<=30 ;x++ ){ do {
 
             int size = 0;
             auto img = rl::LoadImageFromScreen(); 
             auto raw = rl::ExportImageToMemory( img, ".png", &size );
 
-            auto out = fs::writable( regex::format( "./View/captchat/${0}.html", chars ) );
             auto str = string_t( (char*) raw, size );
-            console::log( "->", chars, chars.size() );
+            console::log( x, "->", chars );
 
-            out.write("<img src=\"");
-            out.write("data:image/png;base64, ");
-            out.write( encoder::base64::get(str) );
-            out.write("\">");
+            file.write( regex::format( "[img=\"${0}\"]{" ,x ) );
+
+            file.write( "background-repeat: no-repeat;" );
+            file.write( "width: 300px; height: 180px;"  );
+            file.write( "image-rendering: pixelated;"   );
+            file.write( "transform-origin: 0px 0px;"    );
+            file.write( "transform: scale(6); "         );
+
+            file.write( "background-image:url('"  );
+            file.write( "data:image/png;base64, " ); 
+            file.write( encoder::base64::get(str) );
+            name.write( chars + ( x<30 ?"\n":"" ) );
+            file.write( regex::format("'); }") );
 
             rl::UnloadImage( img );
 
