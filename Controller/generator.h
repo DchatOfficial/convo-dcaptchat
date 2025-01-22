@@ -61,14 +61,15 @@ void generator() {
         static int x=0;
     coStart
 
-        for( x=0; x<=30 ;x++ ){ do {
+        for( x=0; x<=30; x++ ){ do {
 
             int size = 0;
+            auto nme = chars.copy();
             auto img = rl::LoadImageFromScreen(); 
             auto raw = rl::ExportImageToMemory( img, ".png", &size );
 
             auto str = string_t( (char*) raw, size );
-            console::log( x, "->", chars );
+            console::log( x, "->", nme );
 
             file.write( regex::format( "[img=\"${0}\"]{" ,x ) );
 
@@ -81,7 +82,7 @@ void generator() {
             file.write( "background-image:url('"  );
             file.write( "data:image/png;base64, " ); 
             file.write( encoder::base64::get(str) );
-            name.write( chars + ( x<30 ?"\n":"" ) );
+            name.write( nme + ( x<30 ?"\n":"" ) );
             file.write( regex::format("'); }") );
 
             rl::UnloadImage( img );

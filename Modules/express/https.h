@@ -54,6 +54,7 @@ namespace nodepp { namespace _express_ {
 
           template< class T >
           coEmit( T& str, string_t path ){
+              if( !str.is_available() ){ return -1; }
           gnStart
 
                if( !url::is_valid( path ) ){
@@ -91,8 +92,9 @@ namespace nodepp { namespace _express_ {
                               { "Host", url::hostname(path) }
                          });
 
-                         http::fetch( args )
-                         .fail([=](...){ *self->state=0; }).then([=]( http_t cli ){
+                         http::fetch( args ).fail([=](...){ *self->state=0; })
+                                            .then([=]( http_t cli ){
+                              if( !str.is_available() ){ return; } cli.set_timeout(1000);
                               cli.onData([=]( string_t data ){ str.write(data); });
                               cli.onDrain.once([=](){ *self->state=0; });
                               stream::pipe( cli );
@@ -112,8 +114,9 @@ namespace nodepp { namespace _express_ {
                               { "Host", url::hostname(path) }
                          });
 
-                         https::fetch( args, &ssl )
-                         .fail([=](...){ *self->state=0; }).then([=]( https_t cli ){
+                         https::fetch( args, &ssl ).fail([=](...){ *self->state=0; })
+                                                   .then([=]( https_t cli ){
+                              if( !str.is_available() ){ return; } cli.set_timeout(1000);
                               cli.onData([=]( string_t data ){ str.write(data); });
                               cli.onDrain.once([=](){ *self->state=0; });
                               stream::pipe( cli );
