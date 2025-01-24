@@ -67,9 +67,7 @@ void generator() {
             auto nme = chars.copy();
             auto img = rl::LoadImageFromScreen(); 
             auto raw = rl::ExportImageToMemory( img, ".png", &size );
-
-            auto str = string_t( (char*) raw, size );
-            console::log( x, "->", nme );
+            auto str = string_t( (char*) raw, size ); console::log( x,"->",nme );
 
             file.write( regex::format( "[img=\"${0}\"]{" ,x ) );
 
@@ -82,7 +80,7 @@ void generator() {
             file.write( "background-image:url('"  );
             file.write( "data:image/png;base64, " ); 
             file.write( encoder::base64::get(str) );
-            name.write( nme + ( x<30 ?"\n":"" ) );
+            name.write( nme + ( x<30 ? "\n": "" ) );
             file.write( regex::format("'); }") );
 
             rl::UnloadImage( img );
